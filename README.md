@@ -1,17 +1,4 @@
-START 
-=========================================================
-Start Mongodb - mongod --dbpath ~/temp/mongodata/
-
-Start shell - mongo
-> use contributionsdb;
-> db.contribution.count();
-
-cd /home/mathew/projects/nodejs/mongoose
-node basicnodejshello.js (http://localhost:3000/)
-node hellothere.js (http://localhost:3000/mathew)
-
-
-MONGO SHELL COMMANDS
+BASIC MONGO SHELL COMMANDS
 =========================================================
 Start Mongodb - mongod --dbpath ~/temp/mongodata/
 
