@@ -1,15 +1,12 @@
 BASIC MONGO SHELL COMMANDS
 =========================================================
 Start Mongodb - 
-cd /home/mathew/mongodb-linux-x86_64-2.0.6/bin
-mongod --dbpath ~/temp/mongodata/
+   cd /home/mathew/mongodb-linux-x86_64-2.0.6/bin
+   mongod --dbpath ~/temp/mongodata/
 
 Start shell - mongo
-> use contributionsdb;
-> db.contribution.count();
-
-=> show data file contents
-=> show json record (db.contribution.findOne())
+   use contributionsdb;
+   db.contribution.count();
 
 
 MONGO SHELL COMMANDS
@@ -32,7 +29,7 @@ LOADING DATA
 Use JAVA or your fav language to load the data 
 OR
 use the simple approach...
-mongoimport --host localhost --db contributionsdb --collection contribution --type csv --file P00000001-ALL.csv --headerline --upsert
+    mongoimport --host localhost --db contributionsdb --collection contribution --type csv --file P00000001-ALL.csv --headerline --upsert
 
 
 RUN MAP REDUCE : FIND MAX AND MIN CONTRIBUTION AMOUNTS PER CANDIDATE
