@@ -1,0 +1,10 @@
+{
+  "name":"mattazoid-contribs",
+  "version":"0.0.1",
+  "dependencies":{
+      "express":"",
+      "mongoose":"",
+      "mongodb":"",
+      "console":""
+  }
+}

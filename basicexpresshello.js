@@ -1,6 +1,6 @@
 // express
 var express = require('express');
-var app = express.createServer();
+var app = express();
 
 // console for logging
 var console = require('console');
@@ -12,7 +12,7 @@ app.get('/:name', function(req, resp) {
 });
 
 //start server
-app.listen(3000);
+app.listen(process.env.VCAP_APP_PORT || 3000);
 
 
-console.log('Server running at http://127.0.0.1:3000/');
+console.log('Server running at http://hostname:3000/');

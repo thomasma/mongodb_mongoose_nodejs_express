@@ -2,7 +2,7 @@
 // common objects 
 // ===========================================================
 var express = require('express');
-var app = express.createServer();
+var app = express();
 var console = require('console');
 var mongoose = require('mongoose');
 
