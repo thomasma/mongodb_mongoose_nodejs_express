@@ -1,10 +1,10 @@
 BASIC MONGO SHELL COMMANDS
 =========================================================
-Start Mongodd... 
+Start mongodb. 
    cd /home/mathew/mongodb-linux-x86_64-2.0.6/bin
    mongod --dbpath ~/temp/mongodata/
 
-Start shell...
+Start shell.
    mongo
    use contributionsdb;
    db.contribution.count();
