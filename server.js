@@ -1,49 +1,21 @@
 // ===========================================================
-// common objects 
+// RESTful services exposed via Nodejs,express and mongoose
 // ===========================================================
+
+// load 3rd party modules 
 var express = require('express');
 var app = express();
-var console = require('console');
-var mongoose = require('mongoose');
 
-// connect to mongoose
-mongoose.connect('mongodb://localhost:27017/contributionsdb');
-
-
+// load our custom data access module
+var DataAccess = require('./models');
 // ===========================================================
-// the domain object for candidate contributions
-// ===========================================================
-var Schema = mongoose.Schema
-  , ObjectId = Schema.ObjectId;
-
-var Contribution = new Schema({
-    _id    : ObjectId,
-    cmteId     : String, 
-    candId     : String, 
-    candNm     : String, 
-    contbrNm     : String, 
-    contbrCity   : String, 
-    contbrSt     : String, 
-    contbrZip    : String, 
-    contbrEmployer     : String, 
-    contbrOccupation   : String, 
-    contbReceiptAmt    : String, 
-    contbReceiptDt     : Date, 
-    receiptDesc     : String, 
-    memoCd     : String, 
-    memoText   : String, 
-    formTp     : String, 
-    fileNum    : String
-}, { collection : 'contribution' });
-
-var ContributionModel = mongoose.model('contribution', Contribution);
 
 
 // ===========================================================
 // find one record for a candidate
 // ===========================================================
 app.get('/candidate/findone/:name', function(req, res) {
-   ContributionModel.findOne({'candNm' : req.params.name}, function (err, result) {
+   DataAccess.ContributionModel.findOne({'candNm' : req.params.name}, function (err, result) {
         if (result != null) {
             res.json(result);
         }
@@ -53,11 +25,12 @@ app.get('/candidate/findone/:name', function(req, res) {
    });
 });
 
-// ===========================================================
-// return the total count of transactions for a candidate
-// ===========================================================
+
+// ===============================================================
+// AD-HOC: Return the total count of transactions for a candidate
+// ===============================================================
 app.get('/candidate/count/:name', function(req, res) {
-   ContributionModel.count({'candNm' : req.params.name}, function (err, result) {
+   DataAccess.ContributionModel.count({'candNm' : req.params.name}, function (err, result) {
         if (result != null) {
             res.send(result + ' records found for candidate ' + req.params.name);
         }
@@ -67,11 +40,57 @@ app.get('/candidate/count/:name', function(req, res) {
    });
 });
 
+
+// =================================================================================
+// RUN MAP REDUCE #1 : TRANSACTION COUNT, TOTAL DOLLARS CONTRIBUTED (BY CANDIDATE)
+// =================================================================================
+app.get('/candidate/candidatetxnsummary', function(req, res) {
+   DataAccess.CandidateTransactionSummaryModel.find({}, function (err, result) {
+        if (result != null) {
+            res.json(result);
+        }
+        else {
+            res.send('No records found');
+        }
+   });
+});
+
+
 // ===========================================================
-// return all records for a candidate (use carefully)
+// RUN MAP REDUCE #2 : FIND MAX AND MIN CONTRIBUTION AMOUNTS PER CANDIDATE
 // ===========================================================
+app.get('/candidate/maxmincontribspercandidate', function(req, res) {
+   DataAccess.MaxMinContribsPerCandidateModel.find({}, function (err, result) {
+        if (result != null) {
+            res.json(result);
+        }
+        else {
+            res.send('No records found');
+        }
+   });
+});
+
+
+// ===========================================================
+// RUN MAP REDUCE #3 : FIND TOTAL CONTRIBUTION FROM A Company
+// ===========================================================
+app.get('/candidate/totalcontributionsbycompany/:companyname', function(req, res) {
+   DataAccess.TotalContributionsByCompanyModel.find({'_id': req.params.companyname}, function (err, result) {
+        if (result != null) {
+            res.json(result);
+        }
+        else {
+            res.send('No records found');
+        }
+   });
+});
+
+
+// ==============================================================
+// AD HOC : return all records for a candidate (use carefully)
+// ==============================================================
 app.get('/candidate/findall/:name', function(req, res) {
-   ContributionModel.find({'candNm' : req.params.name}, function (err, results) {
+   DataAccess.ContributionModel.find({'candNm' : req.params.name}, function (err, results) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         if (results != null) {
             results.forEach(function(record){
@@ -84,21 +103,19 @@ app.get('/candidate/findall/:name', function(req, res) {
             res.send('No records found for candidate name ' + req.params.name);
         }
    });
-   //res.send(JSON.stringify(pojo));
 });
 
-/*
-ContributionModel.find({'candNm' : 'Bachmann, Michelle'}, function (err, docs) {
-  console.log(docs);
-  docs.forEach(function(record){
-    console.log(record.candNm);
-  });
-});
-*/
 
+// ==============================================================
+// basic health check
+// ==============================================================
 app.get('/', function(req, resp) {
-   resp.send('hello there');
+   resp.send('code is running');
 });
 
+
+// ==============================================================
 //start server
+// ==============================================================
 app.listen(3000);
+console.log('Listening localhost:3000');
